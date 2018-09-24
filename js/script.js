@@ -9,6 +9,8 @@ const usersPerPage = 10;
 const pages= Math.ceil(listUsers.length/usersPerPage); //number of pages.
 const liPages=[]; //array of <li>
 const page = document.querySelector(".page");
+const pagination = document.querySelector(".pagination");
+const anchor = document.querySelectorAll("a");
 
 
 
@@ -69,9 +71,6 @@ function createPagination(){
 createPagination();//Create Pagination.
 hideItems(0,10); //Initilize always with page 1.
 
-const pagination = document.querySelector(".pagination");
-const anchor = document.querySelectorAll("a");
-
 pagination.addEventListener("click",(e)=>{
   if(e.target.tagName =="A"){
     let page = e.target.textContent;
@@ -82,9 +81,5 @@ pagination.addEventListener("click",(e)=>{
     }
     e.target.className="active"
     hideItems(limitBottom,limitTop);
-
-
-    console.log(limitBottom);
-    console.log(limitTop);
   }
 })
