@@ -62,3 +62,20 @@ divPages.appendChild(ulPages);
 page.appendChild(divPages);
 
 console.log(divPages);
+
+// Add functionality to the pagination buttons so that they show and hide the correct items
+
+hideItems(0,10);
+
+const pagination = document.querySelector(".pagination");
+
+pagination.addEventListener("click",(e)=>{
+  if(e.target.tagName =="A"){
+    let page = e.target.textContent;
+    let limitBottom=(usersPerPage*page)-usersPerPage;
+    let limitTop=usersPerPage*page;
+    hideItems(limitBottom,limitTop);
+    console.log(limitBottom);
+    console.log(limitTop);
+  }
+})
