@@ -26,3 +26,39 @@ for(let i=0;i<listUsers.length;i++){
   }
   }
 }
+
+// Create and append the pagination links - Create a function.
+
+function createElement(tag){
+  let element = document.createElement(tag);
+  return element;
+}
+
+//create Array of <il>
+for(let i=0; i<pages;i++){
+  let item = createElement("li");
+  let anchor = createElement("a");
+  if(i==0){
+    anchor.className="active";
+  }
+  anchor.href = "#";
+  anchor.textContent = i+1;
+  item.append(anchor);
+  liPages.push(item);
+}
+
+const ulPages =createElement("ul");
+const divPages = createElement("div");
+divPages.className = "pagination";
+
+
+//appned li in <ul>
+for(let i=0;i<liPages.length;i++){
+  ulPages.appendChild(liPages[i]);
+}
+//append <ul> in div
+divPages.appendChild(ulPages);
+//append <div class = pagination> to <div class= page>
+page.appendChild(divPages);
+
+console.log(divPages);
