@@ -2,6 +2,7 @@
 List Filter and Pagination
 ******************************************/
 
+
 // Add variables that store DOM elements I will need to reference and/or manipulate
 
 const listUsers = document.querySelectorAll(".student-item");//select all students and I put them in Array.
@@ -24,7 +25,7 @@ for(let i=0;i<listUsers.length;i++){
 }
 
 // Create and append the pagination links
-function createPaginationElements(pages){
+function createPaginationElements(pages,ulClassName){
   let liPages=[];
   //create elements.
   function createElement(tag){
@@ -34,8 +35,8 @@ function createPaginationElements(pages){
 
   //create Array of <il> with its <a>
   for(let i=0; i<pages;i++){
-    let item = createElement("li");
-    let anchor = createElement("a");
+    let item = document.createElement("li");
+    let anchor = document.createElement("a");
     if(i==0){
       anchor.className="active";//when page is load the first nº page is active.
     }
@@ -45,9 +46,10 @@ function createPaginationElements(pages){
     liPages.push(item);
   }
 
-  const ulPages =createElement("ul");//Create <ul>
-  const divPages = createElement("div");//Create <div>
-  divPages.className = "pagination";
+  const ulPages = document.createElement("ul");//Create <ul>
+  ulPages.className = ulClassName;
+  //const divPages = createElement("div");//Create <div>
+  //divPages.className = "pagination";
 
 
   //append li in <ul>
@@ -58,7 +60,7 @@ function createPaginationElements(pages){
   divPages.appendChild(ulPages);
   //append <div class = pagination> to <div class= page>
   page.appendChild(divPages);*/
-
+  return ulPages;
 }
 
 function createSearchButton(){
@@ -118,7 +120,15 @@ function showStudents(studentsToShow){
 }
 
 createSearchButton();
-createPaginationElements(pages);//Create Pagination.
+//createPaginationElements(pages);//Create Pagination.
+
+//Nuevo
+const divPages = document.createElement("div");//Create <div>
+//append <ul> in div
+divPages.appendChild(createPaginationElements(pages,"ulNormal"));
+divPages.className = "pagination";
+//append <div class = pagination> to <div class= page>
+page.appendChild(divPages);
 hideItems(0,9); //Initilize always showing items of page 1.
 
 const pagination = document.querySelector(".pagination");
@@ -155,6 +165,7 @@ function appendPagesSearch (){
 /*When user clics the page number it calculates the limits of a range of numbers.then it will pass that limits
 to hide/show the elements.*/
 pagination.addEventListener("click",(e)=>{
+  let anchor = document.querySelectorAll("a");
   if(e.target.tagName =="A"){
     let page = e.target.textContent;//get page nº
     //let limitBottom=(usersPerPage*page)-usersPerPage;//Example with nº page =1 =>(10*1)-10 = 0;
@@ -177,10 +188,16 @@ const studentSearch = document.querySelector(".student-search");
 studentSearch.addEventListener("click",(e)=>{
   let pagination = document.querySelector(".pagination");
   let ulPagination = pagination.firstElementChild;
+  let ulPageSearch = pagination.firstElementChild;
   if(e.target.tagName =="BUTTON"){
     let student = e.target.previousElementSibling.value;
     student.toLowerCase();
     if(student === ""){
+      console.log(pagination.firstElementChild.className);
+      if(pagination.firstElementChild.className ==="ulSearch"){
+        pagination.removeChild(ulPageSearch);
+        pagination.appendChild(createPaginationElements(pages,"ulNormal"));
+      }
       hideItems(0,9);
     }else{
       let studentsToShow = searchStudent(student);
@@ -189,9 +206,8 @@ studentSearch.addEventListener("click",(e)=>{
       //page.removeChild(pagination);//remove pagination
       if(studentsToShow.length<10){
         pagination.removeChild(ulPagination);        //createPaginationElements(1);
-        let page1 = document.createElement("li");
-        ulPagination.appendChild(page1);
-        pagination.appendChild(ulPagination);
+        const ulPageSearch = createPaginationElements(1,"ulSearch"); //nueva <ul> para pagination.
+        pagination.appendChild(ulPageSearch);
       }else{
         let pagesSearch = Math.ceil(listUsers.length/studentsToShow.length);
         createPaginationElements(pagesSearch);
