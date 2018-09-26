@@ -53,6 +53,7 @@ function hideShowStudents(arrayIndexStudentToShow){
         if(arrayIndexStudentToShow[i]==="1"){
           listUsers[i].style.display="block";
           countBlock++;
+          buttonBack.style.display="block";
 
 
       }else{
@@ -72,7 +73,7 @@ function hideShowStudents(arrayIndexStudentToShow){
         //alert("0 results");
       }
       else{
-        pagination.style.display ="block";
+        //pagination.style.display ="block";
         buttonBack.style.display="none";
 
       }
@@ -201,6 +202,11 @@ function arrayIndexStudentsSearch(arrayIndexStudentsSearch){
   return arrayIndexStudentToShow;
 }
 
+function cleanInputValue(){
+  let input = document.querySelector("input");
+  input.value ="";
+}
+
 
 
 
@@ -229,7 +235,7 @@ input.addEventListener("keyup",(e)=>{
   word.split("");
   if(word===""){
     hideShowStudents(arrayIndexStudentsToShow2(1));
-
+    pagination.style.display="block";
   }else{
 
   let numberStudentsShowed =hideShowStudents(arrayIndexStudentsSearch(searchStudent(word)));
@@ -240,6 +246,8 @@ input.addEventListener("keyup",(e)=>{
 
 buttonBack.addEventListener("click",(e)=>{
   hideShowStudents(arrayIndexStudentsToShow2(1));
+  pagination.style.display="block";
+  cleanInput();
 
 
 })
