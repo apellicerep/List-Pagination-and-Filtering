@@ -9,23 +9,79 @@ const listUsers = document.querySelectorAll(".student-item");//select all studen
 const usersPerPage = 10;
 const pages= Math.ceil(listUsers.length/usersPerPage); //number of pages.
 const page = document.querySelector(".page");
+const buttonBack = document.createElement("button");
+buttonBack.textContent="Back";
+buttonBack.className="back";
+
+//SEARCHBOX
+const divSearch = document.createElement("div");
+divSearch.className="student-search";
+const input = document.createElement("input");
+input.placeholder ="Search Students";
+const button = document.createElement("button");
+button.textContent ="Search";
+divSearch.appendChild(input);
+divSearch.appendChild(button);
+page.firstElementChild.appendChild(divSearch);
+
+//PAGINATION
+const divPages = document.createElement("div")
+//append <ul> in div
+divPages.appendChild(createPaginationElements(pages));
+divPages.className = "pagination";
+//append <div class = pagination> to <div class= page>
+page.appendChild(divPages);
+//////////////
+
+/*PAGINATION SEARCH
+
+const divPagesSearch = document.createElement("div")
+//append <ul> in div
+divPagesSearch.appendChild(createPaginationElements(1));
+divPagesSearch.className = "pagination";
+//append <div class = pagination> to <div class= page>
+page.appendChild(divPagesSearch);*/
 
 
+//function recive Array of Students contains "1" = display.none,  "0" =display.block
+function hideShowStudents(arrayIndexStudentToShow){
+  let count =0;
+  let countBlock=0;
+  let pagination = document.querySelector(".pagination");
+  console.log(arrayIndexStudentToShow);
+    for(let i=0; i<arrayIndexStudentToShow.length;i++){
+        if(arrayIndexStudentToShow[i]==="1"){
+          listUsers[i].style.display="block";
+          countBlock++;
 
-//function that shows just the items(<li>) betwen limitBottom and limitTop.
-function hideItems(limitBottom,limitTop){
-for(let i=0;i<listUsers.length;i++){
-  if((i>=limitBottom)&&(i<=limitTop)){
-    listUsers[i].style.display= "block";
+
+      }else{
+        listUsers[i].style.display="none";
+        count++;
+        buttonBack.style.display="block";
+      }
+
+      }
+
+      if(count ===listUsers.length){
+
+        pagination.style.display ="none";
+        page.appendChild(buttonBack);
+        buttonBack.style.display="block";
+
+        //alert("0 results");
+      }
+      else{
+        pagination.style.display ="block";
+        buttonBack.style.display="none";
+
+      }
+      return countBlock;
   }
-  else{
-    listUsers[i].style.display= "none";
-  }
-  }
-}
+
 
 // Create and append the pagination links
-function createPaginationElements(pages,ulClassName,backButton){
+function createPaginationElements(pages){
   //let backButton = argument[2];
   let liPages=[];
   //create elements.
@@ -42,56 +98,25 @@ function createPaginationElements(pages,ulClassName,backButton){
       anchor.className="active";//when page is load the first nº page is active.
     }
     anchor.href = "#";
-    if(backButton==="none"){
-      anchor.textContent = i+1;//nº page starts from 1 not from 0.
-      item.append(anchor);
-      liPages.push(item);
-
-    }else{
-      anchor.textContent = backButton;
-      item.append(anchor);
-      liPages.push(item);
-
+    anchor.textContent = i+1;//nº page starts from 1 not from 0.
+    item.append(anchor);
+    liPages.push(item);
   }
-  }
-
-  const ulPages = document.createElement("ul");//Create <ul>
-  ulPages.className = ulClassName;
-  //const divPages = createElement("div");//Create <div>
-  //divPages.className = "pagination";
-
+  //Create <ul>
+  let ulPages = document.createElement("ul");
 
   //append li in <ul>
   for(let i=0;i<liPages.length;i++){
     ulPages.appendChild(liPages[i]);
   }
-
-  /*//append <ul> in div
-  divPages.appendChild(ulPages);
-  //append <div class = pagination> to <div class= page>
-  page.appendChild(divPages);*/
   return ulPages;
 }
 
-function createSearchButton(){
-  //create elements
-  const divStudentSearch = document.createElement("div")
-  const button = document.createElement("Button");
-  const input = document.createElement("input");
-  divStudentSearch.className = "student-search";
-  button.textContent="Search";
-  input.placeholder ="Search for students";
-
-  //Append elements
-  divStudentSearch.appendChild(input);
-  divStudentSearch.appendChild(button);
-  page.firstElementChild.appendChild(divStudentSearch);//append divStudentSearch in page-header.
-}
-
-function searchStudent(student){
-  let studentSplit = student.split("");
+function searchStudent(arrayWords){
+  console.log(arrayWords);
   let ok;
   let arrayStudentsMostrar=[];
+  let arrayIndexStudentsSearch=[];
   for(let i=0;i<listUsers.length;i++){
     ok=0;
     let h3 = listUsers[i].firstElementChild.firstElementChild.nextElementSibling;
@@ -99,20 +124,22 @@ function searchStudent(student){
     let nameSplit = name.split("");
     let span = h3.nextElementSibling;
     let email = span.textContent;
-    for(let i=0;i<studentSplit.length;i++){
-        if(studentSplit[i]===nameSplit[i]){
+    for(let i=0;i<arrayWords.length;i++){
+        if(arrayWords[i]===nameSplit[i]){
           ok++;
           console.log(ok);
         }
       }
-      if(ok===studentSplit.length){
-        arrayStudentsMostrar.push(listUsers[i]);
+      if(ok===arrayWords.length){
+        //arrayStudentsMostrar.push(listUsers[i]);
+        arrayIndexStudentsSearch.push(i);
         console.log(listUsers[i]);
+      }
     }
+    return arrayIndexStudentsSearch; //Array with index of students to show.
     }
 
-  return arrayStudentsMostrar;
-}
+
 
 function cleanInput(){
   let input = document.querySelector("input");
@@ -131,108 +158,88 @@ function showStudents(studentsToShow){
     studentsToShow[i].style.display="block";
 
   }
-
 }
 
-createSearchButton();
-//createPaginationElements(pages);//Create Pagination.
 
-//Nuevo
-const divPages = document.createElement("div");//Create <div>
-//append <ul> in div
-divPages.appendChild(createPaginationElements(pages,"ulNormal","none"));
-divPages.className = "pagination";
-//append <div class = pagination> to <div class= page>
-page.appendChild(divPages);
-hideItems(0,9); //Initilize always showing items of page 1.
+hideShowStudents(arrayIndexStudentsToShow2(1));//initialize page 1.
 
-const pagination = document.querySelector(".pagination");
-const anchor = document.querySelectorAll("a");
 
-function calculateLimits(page){
-  let arrayLimits = [];
+
+//function receive nº of page and creates an Array of "1"(show) and "0".(hide).
+function arrayIndexStudentsToShow2(page){
+  let arrayIndexStudentToShow = [];
+  for (let i=0;i<listUsers.length;i++){
+    arrayIndexStudentToShow.push("0");
+  }
   let limitBottom=(usersPerPage*page)-usersPerPage;//Example with nº page =1 =>(10*1)-10 = 0;
-  let limitTop=(usersPerPage*page)-1;//Example with nº page =1=> (10*1)-1= 9;
-  arrayLimits.push(limitBottom,limitTop);
-  return arrayLimits;
+  let limitTop=(usersPerPage*page);//Example with nº page =1=> (10*1)-1= 9;
+  for(limitBottom;limitBottom<limitTop;limitBottom++){
+    for(let i=0;i<arrayIndexStudentToShow.length;i++){
+      if(i==(limitBottom)){
+        arrayIndexStudentToShow[i] ="1";
+      }
+  }
 }
+  return arrayIndexStudentToShow;
+}
+
+function arrayIndexStudentsSearch(arrayIndexStudentsSearch){
+  console.log(arrayIndexStudentsSearch);
+  let arrayIndexStudentToShow = [];
+  for (let i=0;i<listUsers.length;i++){
+    arrayIndexStudentToShow.push("0");
+  }
+  for(let i=0;i<arrayIndexStudentsSearch.length;i++){
+    for(let j=0;j<listUsers.length;j++){
+      if(arrayIndexStudentsSearch[i]===j){
+        arrayIndexStudentToShow[j]="1";
+      }
+
+    }
+  }
+  console.log(arrayIndexStudentToShow);
+  return arrayIndexStudentToShow;
+}
+
+
+
 
 /*When user clics the page number it calculates the limits of a range of numbers.then it will pass that limits
 to hide/show the elements.*/
+
+const pagination = document.querySelector(".pagination");
 pagination.addEventListener("click",(e)=>{
-  cleanInput();
-  let anchor = document.querySelectorAll("a");
-  let ulPageSearch = pagination.firstElementChild;
-  let ulPagination = pagination.firstElementChild;
-  function printPagination(page){
-    let limits = calculateLimits(page);
-    console.log(limits);
-    let limitBottom = limits[0];
-    let limitTop = limits[1];
-    console.log(limitTop);
-    for(let i=0;i<anchor.length;i++){//deactivate the class "active" in anchors
-      anchor[i].className="";
+  let page = e.target.textContent;
+  hideShowStudents(arrayIndexStudentsToShow2(page));
+  if(e.target.tagName ==="A"){
+    let anchor = document.querySelector(".active");
+    anchor.className="inactive";
+    e.target.className ="active";
     }
-    e.target.className="active"//just "active" the anchor that was click.
-    hideItems(limitBottom,limitTop);//call function to hide/show elements.
-}
-  if(e.target.tagName =="A"){
-    let page = e.target.textContent;//get page nº
-    if(page ==="Back"){
-      let page=1;
-      printPagination(page);
-      pagination.removeChild(ulPagination);        //createPaginationElements(1);
-      const ulPageSearch = createPaginationElements(pages,"ulPagination","none"); //nueva <ul> para pagination.
-      pagination.appendChild(ulPageSearch);
-    }else{
-      printPagination(page);
-    }
-
-  }
-
-
 })
 
-const studentSearch = document.querySelector(".student-search");
+//const input1 = document.querySelector("input");
 
-studentSearch.addEventListener("click",(e)=>{
+input.addEventListener("keyup",(e)=>{
   let pagination = document.querySelector(".pagination");
-  let ulPagination = pagination.firstElementChild;
-  let ulPageSearch = pagination.firstElementChild;
-  let li = document.querySelectorAll("li");
-  if(e.target.tagName =="BUTTON"){
-    let student = e.target.previousElementSibling.value;
-    student.toLowerCase();
-    if(student === ""){
-      console.log(pagination.firstElementChild.className);
-      if((pagination.firstElementChild.className ==="ulSearch")||(pagination.firstElementChild.className ==="ulPagination")){
-        pagination.removeChild(ulPageSearch);
-        pagination.appendChild(createPaginationElements(pages,"ulNormal","none"));
-      }
-      hideItems(0,9);
-    }else{
-      let studentsToShow = searchStudent(student);
-      console.log(studentsToShow);
-      hideAllStudents();
-      //page.removeChild(pagination);//remove pagination
-      if((studentsToShow.length>0)&&(studentsToShow.length<10)){
-        pagination.removeChild(ulPagination);        //createPaginationElements(1);
-        const ulPageSearch = createPaginationElements(1,"ulSearch","none"); //nueva <ul> para pagination.
-        pagination.appendChild(ulPageSearch);
-      }else if(studentsToShow.length===0){
-        console.log(li);
-        pagination.removeChild(ulPagination);
-        pagination.textContent="0 Results Found";
-        let notFound = createPaginationElements(1,"ulPagination","Back");
-        pagination.appendChild(notFound);
+  pagination.style.display="none";
+  let arrayWords =[];
+  let word = input.value;
+  console.log(word);
+  word.split("");
+  if(word===""){
+    hideShowStudents(arrayIndexStudentsToShow2(1));
 
-      }else{
-        let pagesSearch = Math.ceil(listUsers.length/studentsToShow.length);
-        createPaginationElements(pagesSearch);
-      }
-      showStudents(studentsToShow);
-      console.log("hola");
-    }
+  }else{
 
-  }
+  let numberStudentsShowed =hideShowStudents(arrayIndexStudentsSearch(searchStudent(word)));
+  let pagesToSearch=0;
+}
+})
+
+
+buttonBack.addEventListener("click",(e)=>{
+  hideShowStudents(arrayIndexStudentsToShow2(1));
+
+
 })
