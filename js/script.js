@@ -17,7 +17,7 @@ buttonBack.className="back";
 const divSearch = document.createElement("div");
 divSearch.className="student-search";
 const input = document.createElement("input");
-input.placeholder ="Search Students";
+input.placeholder ="Search Students...";
 const button = document.createElement("button");
 button.textContent ="Search";
 divSearch.appendChild(input);
@@ -147,6 +147,15 @@ function cleanInput(){
   input.value = "";
 }
 
+function activate1stPage(){
+  let active = document.querySelector(".active");
+  let inactiveToActive = document.querySelector("a");
+  active.className="inactive";
+  inactiveToActive.className="active";
+
+
+}
+
 
 function hideAllStudents(){
   for(let i=0;i<listUsers.length;i++){
@@ -236,6 +245,8 @@ input.addEventListener("keyup",(e)=>{
   if(word===""){
     hideShowStudents(arrayIndexStudentsToShow2(1));
     pagination.style.display="block";
+    activate1stPage();
+
   }else{
 
   let numberStudentsShowed =hideShowStudents(arrayIndexStudentsSearch(searchStudent(word)));
@@ -248,6 +259,7 @@ buttonBack.addEventListener("click",(e)=>{
   hideShowStudents(arrayIndexStudentsToShow2(1));
   pagination.style.display="block";
   cleanInput();
+  activate1stPage();
 
 
 })
