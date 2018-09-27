@@ -1,1 +1,1 @@
-# List Pagination and Filtering
+# List Pagination and Filtering with Vanilla Javascript
